@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h3 class="mb-4">Change Logs</h3>
+
+<div class="table-responsive">
+<table class="table table-bordered table-striped align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Old Value</th>
+            <th>New Value</th>
+            <th>Changed By</th>
+            <th>Changed At</th>
+            <th>Source</th>
+            <th>Comment</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for l in logs %}
+        <tr>
+            <td>{{ l.log_id }}</td>
+            <td>{{ l.prodnum }}</td>
+            <td>{{ l.buildcatnum }}</td>
+            <td>{{ l.old_value }}</td>
+            <td>{{ l.new_value }}</td>
+            <td>{{ l.changed_by }}</td>
+            <td>{{ l.changed_at | fmt }}</td>
+            <td>{{ l.source }}</td>
+            <td>{{ l.comment }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+</div>
+
+{% endblock %}

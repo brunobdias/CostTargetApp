@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h3 class="mb-4">Add Cost Target</h3>
+
+<form method="post" class="card p-3">
+
+    <!-- FLEX ROW: left side + right side -->
+    <div class="d-flex gap-4">
+
+        <!-- LEFT COLUMN -->
+        <div class="flex-grow-1">
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Product Number</label>
+                    <input type="number" id="prodnum" name="prodnum"
+                           class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Category</label>
+                    <input type="number" name="buildcatnum"
+                           class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label fw-bold">Target Cost (€)</label>
+                    <input type="number" name="target_cost"
+                           step="0.0001" class="form-control" required>
+                </div>
+            </div>
+
+            <!-- COMMENTS directly under left fields -->
+            <div class="mb-3">
+                <label class="form-label fw-bold">Comments</label>
+                <textarea name="comments" class="form-control add-comments-textarea"
+                          rows="6"></textarea>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div style="width: 280px;">
+            <label class="form-label fw-bold">Department</label>
+            <select id="department_id" name="department_id"
+                    class="form-select mb-1" required>
+                <option value="">Select…</option>
+                {% for d in departments %}
+                    <option value="{{ d.department_id }}">
+                        {{ d.department_id }} - {{ d.department_name }}
+                        {% if not d.is_active %}(inactive){% endif %}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <div class="form-text small mt-1">
+                <strong>Auto-select:</strong> Auto Select Dept if it exists and<br>
+                the product number starts from 1–9.<br>
+                The matching department will be pre-selected<br>
+                automatically.
+            </div>
+
+            <div id="dept-warning" class="text-danger mt-2" style="display:none;">
+                ⚠ No matching department for this product number.
+            </div>
+        </div>
+
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+        <a href="{{ url_for('home') }}" class="btn btn-secondary">Cancel</a>
+
+        <!-- Save & Add Another -->
+        <button type="submit" 
+                name="action" 
+                value="add_another"
+                class="btn btn-info">
+            Add Another
+        </button>
+
+        <!-- Save & Return -->
+        <button type="submit" 
+                name="action" 
+                value="save"
+                class="btn btn-success">
+            Save
+        </button>
+    </div>
+
+</form>
+
+
+<!-- SERVER DATA FOR JS -->
+<script>
+    window.existingDepts = {{ dept_ids | tojson | safe }};
+    
+    document.addEventListener("DOMContentLoaded", function() {
+    const prod = document.getElementById("prodnum");
+    if (prod) prod.focus();
+    });
+    
+    setTimeout(() => {
+    document.querySelectorAll('.alert').forEach(a => a.remove());
+    }, 3000);
+</script>
+
+<!-- VALIDATION SCRIPT -->
+<script src="{{ url_for('static', filename='js/add_validation.js') }}"></script>
+
+{% endblock %}

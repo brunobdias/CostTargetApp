@@ -1,0 +1,176 @@
+/* ================================
+   GLOBAL STYLE OVERRIDES
+================================ */
+
+/* Softened table borders */
+.table td, .table th {
+    vertical-align: middle;
+}
+
+/* Collapsible form background */
+.collapse-row {
+    background: #f8f9fa;
+}
+
+/* Add some spacing around inline edit areas */
+form.in-row-form {
+    padding: 15px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+}
+
+/* Ensure badges are slightly larger for readability */
+.badge {
+    font-size: 0.85rem;
+}
+
+/* Table header tweaks */
+.table-dark th {
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+}
+
+/* ================================
+   PLACEHOLDER TEXT (FADED HINTS)
+================================ */
+
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+    color: #9aa0a6 !important; /* soft grey */
+    opacity: 1;
+    font-style: italic;
+}
+
+/* Also apply to search/filter boxes */
+.form-control::placeholder {
+    color: #a6a6a6 !important;
+}
+
+/* Make faded hint text even lighter on some forms */
+.hint {
+    color: #b8b8b8;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ================================
+   BUTTON IMPROVEMENTS
+================================ */
+
+.btn {
+    border-radius: 6px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0b5ed7;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+}
+
+/* ================================
+   NAVBAR STYLE ENHANCEMENTS
+================================ */
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.nav-link.active {
+    font-weight: bold;
+}
+
+/* ================================
+   UTILITIES
+================================ */
+
+.text-small {
+    font-size: 0.85rem;
+}
+
+.text-muted-strong {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Scrollable large tables */
+.table-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+/* ================================
+   INLINE EDITING HIGHLIGHT
+================================ */
+
+.edit-highlight {
+    background: #fff9e6 !important;
+    transition: background 0.3s ease;
+}
+
+/* ================================
+   ERROR PAGE
+================================ */
+
+pre {
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+/* ================================
+   ADD PAGE LAYOUT FIX 
+   Align left fields + comments with department column
+================================ */
+
+.equal-row {
+    display: flex;
+    align-items: flex-start; /* top alignment */
+    gap: 20px;
+}
+
+/* Left = product + category + cost + comments */
+.equal-row .left-col {
+    width: 75%;
+}
+
+/* Right = department + auto-select text */
+.equal-row .right-col {
+    width: 25%;
+}
+
+/* Make comments box fill width cleanly */
+.add-comments-textarea {
+    width: 100%;
+    resize: vertical;
+}
+
+/* Remove blue link color from table headers */
+.table-dark th a {
+    color: inherit !important;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.table-dark th a:hover {
+    text-decoration: underline; /* optional */
+    color: #e0e0e0 !important;   /* softer hover */
+}
+
+/* Persistent bottom-right logo */
+.page-logo {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 170px;        /* Adjust size as needed */
+    opacity: 0.92;        /* Slight transparency */
+    z-index: 9999;        /* Always on top */
+    pointer-events: none; /* Click-through so it never interferes */
+}
