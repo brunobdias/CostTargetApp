@@ -7,7 +7,7 @@
 <div class="card shadow-sm">
     <div class="card-body">
 
-        <form method="POST" action="{{ url_for('edit_user', username=user.username) }}">
+        <form method="POST" action="{{ url_for('edit_user_page', username=user.username) }}">
 
             <div class="row g-3">
 
@@ -73,10 +73,6 @@
         </form>
     </div>
 </div>
-
-<script>
-    window.existingDepts = {{ dept_ids | tojson | safe }};
-</script>
 
 <script src="{{ url_for('static', filename='js/edit_validation.js') }}"></script>
 
