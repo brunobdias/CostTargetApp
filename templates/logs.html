@@ -17,6 +17,8 @@
             <th>Changed At</th>
             <th>Source</th>
             <th>Comment</th>
+            <th>Hostname</th>
+            <th>IP Address</th>
         </tr>
     </thead>
 
@@ -32,6 +34,8 @@
             <td>{{ l.changed_at | fmt }}</td>
             <td>{{ l.source }}</td>
             <td>{{ l.comment }}</td>
+            <td>{{ l.hostname }}</td>
+            <td>{{ l.ip_address }}</td>
         </tr>
         {% endfor %}
     </tbody>

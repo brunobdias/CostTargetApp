@@ -18,6 +18,14 @@ def get_connection():
         conn_str += "Trusted_Connection=yes;"
     return pyodbc.connect(conn_str)
 
+def set_session_context(username, hostname, ip):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("EXEC sys.sp_set_session_context 'username', ?", (username,))
+    cur.execute("EXEC sys.sp_set_session_context 'hostname', ?", (hostname,))
+    cur.execute("EXEC sys.sp_set_session_context 'ip_address', ?", (ip,))
+    conn.commit()
+    conn.close()
 
 # ==================================================
 # USERS
@@ -240,7 +248,8 @@ def list_logs():
     cur = conn.cursor()
     cur.execute("""
         SELECT log_id, prodnum, buildcatnum, old_value, new_value,
-               changed_by, changed_at, source, comment
+               changed_by, changed_at, source, comment,
+               hostname, ip_address
         FROM aux_costtarget_log
         ORDER BY changed_at DESC
     """)
@@ -249,14 +258,15 @@ def list_logs():
     return rows
 
 
-def insert_log(prodnum, buildcatnum, old_value, new_value, username):
+def insert_log(prodnum, buildcatnum, old_value, new_value, username, ip, host):
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO aux_costtarget_log
         (prodnum, buildcatnum, old_value, new_value,
-         changed_by, source, comment)
-        VALUES (?, ?, ?, ?, ?, 'web', NULL)
-    """, (prodnum, buildcatnum, old_value, new_value, username))
+         changed_by, changed_at, source, comment, hostname, ip_address)
+        VALUES (?, ?, ?, ?, ?, GETDATE(), 'web', NULL, ?, ?)
+    """, (prodnum, buildcatnum, old_value, new_value,
+          username, host, ip))
     conn.commit()
     conn.close()
