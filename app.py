@@ -56,23 +56,17 @@ def require_admin(f):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    # If auto-login is active, NEVER allow /login to run!
+    win_user = request.headers.get("REMOTE_USER")
+
+    if win_user:
+        return redirect("/")   # block login page entirely
+
+    # fallback login (ONLY for external users)
     if request.method == "POST":
-
-        username = request.form.get("username", "").strip()
-
-        if not username:
-            return render_template("login.html", error="Username required")
-
-        displayname = username
-
-        user = get_or_create_user(username, displayname)
-        session["logged_in"] = True
-        session["username"] = user.username
-        session["role"] = user.role
-
-        update_last_login(username)
-
-        return redirect(url_for("home"))
+        username = request.form.get("username")
+        session["username"] = username.lower()
+        return redirect("/")
 
     return render_template("login.html")
 
