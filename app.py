@@ -12,6 +12,9 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from functools import wraps
 import socket
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from db import (
     list_costtargets, insert_costtarget, update_costtarget,
     list_logs, insert_log,
