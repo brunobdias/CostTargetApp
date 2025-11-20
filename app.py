@@ -27,15 +27,81 @@ def fmt(value):
         return value.strftime("%Y-%m-%d %H:%M:%S")
     return ""
 
+def get_remote_user_raw():
+    """
+    Get the Windows username forwarded by IIS/ARR.
+    IIS sets HTTP_REMOTE_USER → REMOTE_USER header.
+    """
+    return (
+        request.headers.get("REMOTE_USER")
+        or request.environ.get("REMOTE_USER")
+        or request.environ.get("HTTP_REMOTE_USER")
+    )
+
+
+def normalize_windows_username(remote_user: str) -> str:
+    """Convert DOMAIN\\user or user@domain into 'user'."""
+    if not remote_user:
+        return None
+    if "\\" in remote_user:
+        remote_user = remote_user.split("\\", 1)[1]
+    if "@" in remote_user:
+        remote_user = remote_user.split("@", 1)[0]
+    return remote_user.lower()
+
 # ==================================================
 # DECORATORS
 # ==================================================
+
+# ==================================================
+# AUTO-LOGIN FROM WINDOWS AUTHENTICATION
+# ==================================================
+
+@app.before_request
+def auto_login_from_windows():
+    # Ignore static
+    if request.endpoint in ("static",):
+        return
+
+    raw_remote = get_remote_user_raw()
+
+    if not raw_remote:
+        # Do nothing; require_login() will catch it
+        return
+
+    username = normalize_windows_username(raw_remote)
+
+    # If session already correct, skip DB operations
+    if session.get("logged_in") and session.get("username") == username:
+        return
+
+    # Use your existing helper
+    user_row = get_or_create_user(username, username)
+
+    if not user_row.is_active:
+        return render_template(
+            "error.html",
+            message="Your account is inactive.",
+        ), 403
+
+    # Update timestamp
+    update_last_login(user_row.username)
+
+    # Store in session
+    session["logged_in"] = True
+    session["username"] = user_row.username
+    session["displayname"] = user_row.displayname
+    session["role"] = user_row.role
 
 def require_login(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if not session.get("logged_in"):
-            return redirect(url_for("login"))
+            return (
+                "Unauthorized: No Windows authentication detected. "
+                "Check IIS + Intranet settings.",
+                401,
+            )
         return f(*args, **kwargs)
     return wrapper
 
@@ -56,25 +122,24 @@ def require_admin(f):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    # If auto-login is active, NEVER allow /login to run!
-    win_user = request.headers.get("REMOTE_USER")
+    raw_remote = get_remote_user_raw()
 
-    if win_user:
-        return redirect("/")   # block login page entirely
-
-    # fallback login (ONLY for external users)
-    if request.method == "POST":
-        username = request.form.get("username")
-        session["username"] = username.lower()
+    if raw_remote:
         return redirect("/")
 
-    return render_template("login.html")
-
+    return (
+        "Windows authentication failed (REMOTE_USER missing). "
+        "Ensure browser is in Local Intranet zone.",
+        401,
+    )
 
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("login"))
+    return (
+        "Session cleared. Browser will re-login automatically via Windows SSO.",
+        200,
+    )
 
 
 # ==================================================
