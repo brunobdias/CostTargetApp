@@ -1,0 +1,186 @@
+---
+
+# ✅ **Fix: Run NSSM from the folder by prefixing with `.\`**
+
+You are currently inside:
+
+```
+C:\Users\netmpcadmin2018\Downloads\nssm-2.24-103-gdee49fc\win64
+```
+
+So the correct command is:
+
+```powershell
+.\nssm.exe install CostTargetApp
+```
+
+or simply:
+
+```powershell
+.\nssm install CostTargetApp
+```
+
+A GUI window will pop up.
+
+---
+
+# 🛠️ Optional: Add NSSM to PATH so you can run it anywhere
+
+Move **nssm.exe** to:
+
+```
+C:\Windows\System32\
+```
+
+(You must run PowerShell as Administrator)
+
+Commands:
+
+```powershell
+Move-Item "C:\Users\netmpcadmin2018\Downloads\nssm-2.24-103-gdee49fc\win64\nssm.exe" `
+          "C:\Windows\System32\"
+```
+
+Then NSSM works globally:
+
+```powershell
+nssm install CostTargetApp
+```
+
+---
+
+# 🚀 After NSSM GUI opens:
+
+Fill it like this:
+
+### **Application**
+
+* Path:
+
+  ```
+  C:\Python\CostTargetApp\venv\Scripts\python.exe
+  ```
+* Startup directory:
+
+  ```
+  C:\Python\CostTargetApp
+  ```
+* Arguments:
+
+  ```
+  run_app.py
+  ```
+
+Then click **Install service**.
+
+---
+
+# ✔️ Start service
+
+```powershell
+Start-Service CostTargetApp
+```
+
+And make it automatic:
+
+```powershell
+Set-Service CostTargetApp -StartupType Automatic
+```
+
+---
+
+
+To restart your **CostTargetApp** Windows service after updating the database location (or making any code/config changes), you simply restart the service — no need to kill python processes manually anymore.
+
+Here are all the safe ways to do it 👇
+
+---
+
+# ✅ **1️⃣ Restart service in PowerShell (recommended)**
+
+Run as Administrator:
+
+```powershell
+Restart-Service CostTargetApp
+```
+
+This will:
+
+✔ Stop the Waitress/Python process
+✔ Reload your updated code/env vars
+✔ Start it again immediately
+
+---
+
+# ✅ **2️⃣ If Restart-Service fails, do it manually**
+
+### Stop:
+
+```powershell
+Stop-Service CostTargetApp
+```
+
+### Start again:
+
+```powershell
+Start-Service CostTargetApp
+```
+
+---
+
+# ✅ **3️⃣ Restart service via NSSM GUI**
+
+If you want to check settings inside NSSM:
+
+```powershell
+nssm edit CostTargetApp
+```
+
+A GUI will open → Click:
+
+**➡️ “Restart”** at the bottom.
+
+---
+
+# ✅ **4️⃣ Restart via Windows Services (GUI)**
+
+1. Press **Win + R**
+2. Type: `services.msc`
+3. Look for **CostTargetApp**
+4. Right-click → **Restart**
+
+---
+
+# 🔍 After restarting, verify it’s up
+
+### Check status:
+
+```powershell
+Get-Service CostTargetApp
+```
+
+Expect:
+
+```
+Running
+```
+
+### Check if Python is running:
+
+```powershell
+Get-Process python
+```
+
+You should see a python.exe process with a recent start time.
+
+---
+
+# 🧠 **If you changed DB_SERVER or DB_DATABASE in `.env`**
+
+You must restart the service because environment variables only load **on startup**.
+
+If you want, I can validate your `.env` or db settings — just send the snippet.
+
+---
+
+If you want, I can also generate an **automatic updater service** that stops → updates → restarts cleanly.
