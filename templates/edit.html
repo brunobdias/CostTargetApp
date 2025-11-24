@@ -25,6 +25,12 @@
         <textarea name="comments" class="form-control">{{ record.comments }}</textarea>
     </div>
 
+    <div class="col-md-4">
+        <label class="form-label fw-bold">Customer</label>
+        <input type="text" name="customer" class="form-control"
+            value="{{ record.customer }}">
+    </div>
+
     <div class="mb-3">
         <label class="form-label">Department</label>
         <select name="department_id" class="form-select">

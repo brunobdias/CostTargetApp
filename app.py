@@ -137,6 +137,8 @@ def home():
     prod_filter = request.args.get("prodnum_filter")
     cat_filter = request.args.get("buildcat_filter")
     dept_filter = request.args.get("dept_filter")
+    customer_filter = request.args.get("customer_filter")
+
     sort = request.args.get("sort") or session.get("sort", "prodnum")
     order = request.args.get("order") or session.get("order", "asc")
 
@@ -147,6 +149,8 @@ def home():
         session["buildcat_filter"] = cat_filter.strip()
     if dept_filter is not None:
         session["dept_filter"] = dept_filter
+    if customer_filter is not None:
+        session["customer_filter"] = customer_filter
 
     # Also store sorting
     session["sort"] = sort
@@ -156,12 +160,15 @@ def home():
     prod_filter = session.get("prodnum_filter", "")
     cat_filter = session.get("buildcat_filter", "")
     dept_filter = session.get("dept_filter", "all")
+    customer_filter = session.get("customer_filter", "")
+
 
     # Query database
     rows = list_costtargets(
         prodnum_filter=prod_filter or None,
         buildcat_filter=cat_filter or None,
         dept_filter=dept_filter,
+        customer_filter=customer_filter or None,
         sort=sort,
         order=order
     )
@@ -206,6 +213,7 @@ def add_costtarget():
         buildcatnum = int(request.form["buildcatnum"])
         target_cost = float(request.form["target_cost"])
         comments = request.form.get("comments", "")
+        customer = request.form.get("customer", "")
         username = session["username"]
 
         ip = client_ip()
@@ -223,7 +231,7 @@ def add_costtarget():
 
         try:
             insert_costtarget(
-                prodnum, buildcatnum, target_cost, comments,
+                prodnum, buildcatnum, target_cost, comments, customer,
                 department_id, username
             )
 
@@ -262,12 +270,13 @@ def edit_costtarget_page(record_id):
     if request.method == "POST":
         target_cost = float(request.form["target_cost"])
         comments = request.form.get("comments", "")
+        customer = request.form.get("customer", "")
         dept_id = int(request.form["department_id"])
         username = session["username"]
         ip = client_ip()
         host = client_hostname()
 
-        update_costtarget(record_id, target_cost, comments, dept_id, username)
+        update_costtarget(record_id, target_cost, comments, customer, dept_id, username)
 
         insert_log(record.prodnum, record.buildcatnum,
                    record.target_cost, target_cost,

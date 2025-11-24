@@ -138,13 +138,14 @@ def detect_department(prodnum: int):
     return first_digit
 
 
-def list_costtargets(prodnum_filter=None, buildcat_filter=None, dept_filter=None,
+def list_costtargets(prodnum_filter=None, buildcat_filter=None, customer_filter=None, dept_filter=None, 
                      sort="prodnum", order="asc"):
 
     # VALID SORT MAPPING
     sort_map = {
         "prodnum": "c.prodnum",
         "buildcatnum": "c.buildcatnum",
+        "customer": "c.customer",
         "target_cost": "c.target_cost",
         "department": "d.department_name",   # FIX
         "created_at": "c.created_at",
@@ -158,7 +159,7 @@ def list_costtargets(prodnum_filter=None, buildcat_filter=None, dept_filter=None
     order = "asc" if order.lower() != "desc" else "desc"
 
     sql = f"""
-        SELECT c.id, c.prodnum, c.buildcatnum, c.target_cost, c.comments,
+        SELECT c.id, c.prodnum, c.buildcatnum, c.target_cost, c.comments, c.customer,
                c.updated_by, c.updated_at,
                d.department_name AS department_name, c.department_id,
                c.created_at, c.created_by
@@ -183,6 +184,12 @@ def list_costtargets(prodnum_filter=None, buildcat_filter=None, dept_filter=None
     if dept_filter and dept_filter != "all":
         sql += " AND c.department_id = ?"
         params.append(int(dept_filter))
+        
+    # CUSTOMER FILTER
+    if customer_filter:
+        sql += " AND CAST(c.customer AS NVARCHAR) LIKE ?"
+        params.append(customer_filter.replace("*", "%"))
+        
 
     # FINAL ORDER BY
     sql += f" ORDER BY {sort_column} {order}"
@@ -195,7 +202,7 @@ def list_costtargets(prodnum_filter=None, buildcat_filter=None, dept_filter=None
     return rows
 
 
-def insert_costtarget(prodnum, buildcatnum, target_cost, comments, department_id, username):
+def insert_costtarget(prodnum, buildcatnum, target_cost, comments, customer, department_id, username):
     conn = get_connection()
     cur = conn.cursor()
 
@@ -214,26 +221,26 @@ def insert_costtarget(prodnum, buildcatnum, target_cost, comments, department_id
     # Normal insert…
     cur.execute("""
         INSERT INTO aux_costtarget
-            (prodnum, buildcatnum, target_cost, comments,
+            (prodnum, buildcatnum, target_cost, comments, customer,
              department_id, created_by, updated_by)
         VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (prodnum, buildcatnum, target_cost, comments,
+    """, (prodnum, buildcatnum, target_cost, comments, customer,
           department_id, username, username))
 
     conn.commit()
     conn.close()
 
-def update_costtarget(record_id: int, target_cost: float, comments: str,
+def update_costtarget(record_id: int, target_cost: float, comments: str, customer: str,
                       department_id: int, username: str):
     conn = get_connection()
     cur = conn.cursor()
 
     cur.execute("""
         UPDATE aux_costtarget
-        SET target_cost = ?, comments = ?, department_id = ?,
+        SET target_cost = ?, comments = ?, customer = ?, department_id = ?,
             updated_by = ?, updated_at = GETDATE()
         WHERE id = ?
-    """, (target_cost, comments, department_id, username, record_id))
+    """, (target_cost, comments, customer, department_id, username, record_id))
 
     conn.commit()
     conn.close()
@@ -248,7 +255,7 @@ def list_logs():
     cur = conn.cursor()
     cur.execute("""
         SELECT log_id, prodnum, buildcatnum, old_value, new_value,
-               changed_by, changed_at, source, comment,
+               changed_by, changed_at, source, comment, customer,
                hostname, ip_address
         FROM aux_costtarget_log
         ORDER BY changed_at DESC
