@@ -41,6 +41,9 @@
                             {% if user.role == 'admin' %}selected{% endif %}>
                             Admin
                         </option>
+                        <option value="reader" {% if user.role == 'reader' %}selected{% endif %}>
+                            Reader
+                        </option>
                     </select>
                 </div>
 

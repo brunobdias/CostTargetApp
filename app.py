@@ -74,12 +74,21 @@ def require_admin(f):
         return f(*args, **kwargs)
     return wrapper
 
+def require_editor(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if session.get("role") not in ("user", "admin"):
+            return render_template("error.html",
+                message="You do not have permission to perform this action.")
+        return f(*args, **kwargs)
+    return wrapper
 
 # ==========================================
 # LOGIN
 # ==========================================
 
 @app.route("/login", methods=["GET", "POST"])
+#@require_editor
 def login():
 
     if request.method == "POST":
@@ -155,7 +164,7 @@ def home():
 # ==========================================
 
 @app.route("/add", methods=["GET", "POST"])
-@require_login
+@require_editor
 def add_costtarget():
 
     if request.method == "POST":
@@ -209,7 +218,7 @@ def add_costtarget():
 # ==========================================
 
 @app.route("/edit/<int:record_id>", methods=["GET", "POST"])
-@require_login
+@require_editor
 def edit_costtarget_page(record_id):
 
     rows = list_costtargets()
