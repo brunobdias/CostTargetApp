@@ -223,7 +223,7 @@ def insert_costtarget(prodnum, buildcatnum, target_cost, comments, customer, dep
         INSERT INTO aux_costtarget
             (prodnum, buildcatnum, target_cost, comments, customer,
              department_id, created_by, updated_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (prodnum, buildcatnum, target_cost, comments, customer,
           department_id, username, username))
 

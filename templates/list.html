@@ -4,6 +4,36 @@
 
 <h3 class="mb-4">Cost Target List</h3>
 
+{% if filters_active %}
+<div style="background:#fff3cd; border:1px solid #ffecb5; padding:10px; border-radius:6px;"
+     class="mb-3">
+
+    <strong>Active filters:</strong>
+
+    {% if prod_filter %}
+        <span class="badge bg-primary">Prod: {{ prod_filter }}</span>
+    {% endif %}
+
+    {% if cat_filter %}
+        <span class="badge bg-info">Cat: {{ cat_filter }}</span>
+    {% endif %}
+    
+    {% if customer_filter %}
+        <span class="badge bg-secondary">Cust: {{ customer_filter }}</span>
+    {% endif %}
+
+    {% if dept_filter not in ["", "all"] %}
+        <span class="badge bg-success">Dept: {{ dept_filter }}</span>
+    {% endif %}
+
+    – some results may be hidden.
+
+    <a href="/clear_filters" class="btn btn-sm btn-outline-dark float-end">Clear</a>
+
+</div>
+{% endif %}
+
+
 <!-- FILTERS -->
 <form method="get" class="row g-3 mb-4">
 

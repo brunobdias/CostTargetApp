@@ -175,13 +175,20 @@ def home():
     rows = list_costtargets(
         prodnum_filter=prod_filter or None,
         buildcat_filter=cat_filter or None,
-        dept_filter=dept_filter,
         customer_filter=customer_filter or None,
+        dept_filter=dept_filter,
         sort=sort,
         order=order
     )
 
     departments = get_departments()
+    
+    filters_active = (
+        bool(prod_filter) or
+        bool(cat_filter) or
+        bool(customer_filter) or
+        (dept_filter not in ("", "all"))
+    )
 
     return render_template(
         "list.html",
@@ -189,9 +196,11 @@ def home():
         departments=departments,
         prod_filter=prod_filter,
         cat_filter=cat_filter,
+        customer_filter=customer_filter,
         dept_filter=dept_filter,
         sort=sort,
-        order=order
+        order=order,
+        filters_active=filters_active
     )
 
 #===========================================
@@ -200,11 +209,15 @@ def home():
 @app.route("/clear_filters")
 @require_login
 def clear_filters():
+    # Remove all filters from session
     session.pop("prodnum_filter", None)
     session.pop("buildcat_filter", None)
     session.pop("dept_filter", None)
+    session.pop("customer_filter", None) 
     session.pop("sort", None)
     session.pop("order", None)
+
+    # Redirect to clean home page
     return redirect(url_for("home"))
 
 # ==========================================
