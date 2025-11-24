@@ -44,7 +44,7 @@
     </div>
 
     <div class="col-md-2 d-flex align-items-end">
-        <a href="/" class="btn btn-secondary w-100">Clear</a>
+        <a href="/clear_filters" class="btn btn-secondary w-100">Clear</a>
     </div>
 
 </form>
@@ -63,69 +63,32 @@
 <table class="table table-bordered table-striped align-middle">
     <thead class="table-dark">
         <tr>
-
             <th>
-                <a href="?sort=prodnum
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Product
-                </a>
+                <a href="?sort=prodnum&order={{ 'asc' if order=='desc' else 'desc' }}">Product</a>
             </th>
 
             <th>
-                <a href="?sort=buildcatnum
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Category
-                </a>
+                <a href="?sort=buildcatnum&order={{ 'asc' if order=='desc' else 'desc' }}">Category</a>
             </th>
 
             <th>
-                <a href="?sort=target_cost
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Target Cost
-                </a>
+                <a href="?sort=target_cost&order={{ 'asc' if order=='desc' else 'desc' }}">Target Cost</a>
             </th>
 
             <th>Comments</th>
 
             <th>
-                <a href="?sort=department
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Department
-                </a>
+                <a href="?sort=department&order={{ 'asc' if order=='desc' else 'desc' }}">Department</a>
             </th>
 
             <th>
-                <a href="?sort=created_at
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Created At
-                </a>
+                <a href="?sort=created_at&order={{ 'asc' if order=='desc' else 'desc' }}">Created At</a>
             </th>
 
             <th>Created By</th>
 
             <th>
-                <a href="?sort=updated_at
-                        &order={{ 'asc' if order=='desc' else 'desc' }}
-                        &prodnum_filter={{ prod_filter }}
-                        &buildcat_filter={{ cat_filter }}
-                        &dept_filter={{ dept_filter }}">
-                    Updated At
-                </a>
+                <a href="?sort=updated_at&order={{ 'asc' if order=='desc' else 'desc' }}">Updated At</a>
             </th>
 
             <th>Updated By</th>

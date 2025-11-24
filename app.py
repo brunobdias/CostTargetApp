@@ -133,12 +133,31 @@ def logout():
 @require_login
 def home():
 
-    prod_filter = request.args.get("prodnum_filter", "").strip()
-    cat_filter = request.args.get("buildcat_filter", "").strip()
-    dept_filter = request.args.get("dept_filter", "").strip() or "all"
-    sort = request.args.get("sort", "prodnum")
-    order = request.args.get("order", "asc")
+    # --- READ FILTERS FROM REQUEST OR SESSION ---
+    prod_filter = request.args.get("prodnum_filter")
+    cat_filter = request.args.get("buildcat_filter")
+    dept_filter = request.args.get("dept_filter")
+    sort = request.args.get("sort") or session.get("sort", "prodnum")
+    order = request.args.get("order") or session.get("order", "asc")
 
+    # Save new filters to session (but only if provided)
+    if prod_filter is not None:
+        session["prodnum_filter"] = prod_filter.strip()
+    if cat_filter is not None:
+        session["buildcat_filter"] = cat_filter.strip()
+    if dept_filter is not None:
+        session["dept_filter"] = dept_filter
+
+    # Also store sorting
+    session["sort"] = sort
+    session["order"] = order
+
+    # Get final filter values from session
+    prod_filter = session.get("prodnum_filter", "")
+    cat_filter = session.get("buildcat_filter", "")
+    dept_filter = session.get("dept_filter", "all")
+
+    # Query database
     rows = list_costtargets(
         prodnum_filter=prod_filter or None,
         buildcat_filter=cat_filter or None,
@@ -149,15 +168,29 @@ def home():
 
     departments = get_departments()
 
-    return render_template("list.html",
-                           rows=rows,
-                           departments=departments,
-                           prod_filter=prod_filter,
-                           cat_filter=cat_filter,
-                           dept_filter=dept_filter,
-                           sort=sort,
-                           order=order)
+    return render_template(
+        "list.html",
+        rows=rows,
+        departments=departments,
+        prod_filter=prod_filter,
+        cat_filter=cat_filter,
+        dept_filter=dept_filter,
+        sort=sort,
+        order=order
+    )
 
+#===========================================
+# CLEAR FILTERS
+#===========================================
+@app.route("/clear_filters")
+@require_login
+def clear_filters():
+    session.pop("prodnum_filter", None)
+    session.pop("buildcat_filter", None)
+    session.pop("dept_filter", None)
+    session.pop("sort", None)
+    session.pop("order", None)
+    return redirect(url_for("home"))
 
 # ==========================================
 # ADD COSTTARGET
@@ -212,7 +245,6 @@ def add_costtarget():
 
     return render_template("add.html", departments=departments, dept_ids=dept_ids)
 
-
 # ==========================================
 # EDIT COSTTARGET
 # ==========================================
@@ -251,7 +283,6 @@ def edit_costtarget_page(record_id):
                            departments=departments,
                            dept_ids=dept_ids)
 
-
 # ==========================================
 # LOGS
 # ==========================================
@@ -262,7 +293,6 @@ def edit_costtarget_page(record_id):
 def logs_page():
     logs = list_logs()
     return render_template("logs.html", logs=logs)
-
 
 # ==========================================
 # USERS (ADMIN)
