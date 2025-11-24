@@ -64,27 +64,75 @@
     <thead class="table-dark">
         <tr>
 
-            <th><a href="?sort=prodnum&order={{ 'asc' if order=='desc' else 'desc' }}">Product</a></th>
+            <th>
+                <a href="?sort=prodnum
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Product
+                </a>
+            </th>
 
-            <th><a href="?sort=buildcatnum&order={{ 'asc' if order=='desc' else 'desc' }}">Category</a></th>
+            <th>
+                <a href="?sort=buildcatnum
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Category
+                </a>
+            </th>
 
-            <th><a href="?sort=target_cost&order={{ 'asc' if order=='desc' else 'desc' }}">Target Cost</a></th>
+            <th>
+                <a href="?sort=target_cost
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Target Cost
+                </a>
+            </th>
 
             <th>Comments</th>
 
-            <th><a href="?sort=department&order={{ 'asc' if order=='desc' else 'desc' }}">Department</a></th>
+            <th>
+                <a href="?sort=department
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Department
+                </a>
+            </th>
 
-            <th><a href="?sort=created_at&order={{ 'asc' if order=='desc' else 'desc' }}">Created At</a></th>
+            <th>
+                <a href="?sort=created_at
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Created At
+                </a>
+            </th>
 
             <th>Created By</th>
 
-            <th><a href="?sort=updated_at&order={{ 'asc' if order=='desc' else 'desc' }}">Updated At</a></th>
+            <th>
+                <a href="?sort=updated_at
+                        &order={{ 'asc' if order=='desc' else 'desc' }}
+                        &prodnum_filter={{ prod_filter }}
+                        &buildcat_filter={{ cat_filter }}
+                        &dept_filter={{ dept_filter }}">
+                    Updated At
+                </a>
+            </th>
 
             <th>Updated By</th>
+
             {% if session.get('role') in ['user', 'admin'] %}
                 <th>Actions</th>
             {% endif %}
-
         </tr>
     </thead>
 
