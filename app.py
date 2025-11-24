@@ -11,6 +11,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from functools import wraps
 import socket
+import os
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -24,8 +25,11 @@ from db import (
     detect_department
 )
 
+#DB_SERVER_NAME = os.getenv("DB_SERVER", "unknown")
+
 app = Flask(__name__)
 app.secret_key = "123456789"
+
 
 # ============
 # JINJA FILTER
@@ -82,6 +86,10 @@ def require_editor(f):
                 message="You do not have permission to perform this action.")
         return f(*args, **kwargs)
     return wrapper
+
+@app.context_processor
+def inject_server_info():
+    return dict(db_server=os.getenv("DB_SERVER", "unknown"))
 
 # ==========================================
 # LOGIN
