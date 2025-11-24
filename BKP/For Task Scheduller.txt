@@ -1,0 +1,4 @@
+#If you're using Task Scheduler and not a Windows Service, then use:
+
+taskkill /IM python.exe /F
+Start-Process "C:\apps\CostTargetApp\venv\Scripts\python.exe" "C:\apps\CostTargetApp\run_app.py"
