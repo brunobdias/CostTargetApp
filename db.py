@@ -49,7 +49,7 @@ def create_user(username: str, displayname: str):
     cur = conn.cursor()
     cur.execute("""
         INSERT INTO aux_costtarget_user (username, displayname, role, is_active)
-        VALUES (?, ?, 'user', 1)
+        VALUES (?, ?, 'reader', 1)
     """, (username, displayname))
     conn.commit()
     conn.close()
